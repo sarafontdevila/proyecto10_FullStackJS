@@ -25,7 +25,7 @@ const postEvento = async (req, res) => {
     return res.status(200).json(evento)
     
   } catch (error) {
-    return res.status(400).json("error")
+    return res.status(400).json("error", error)
     
   }
 }
@@ -33,6 +33,7 @@ const updateEvento = async (req, res) => {
   try {
     const {id} = req.params
     const newEvento = new Evento(req.body)
+    newEvento._id = id
     const eventoUpdated = await Evento.findByIdAndUpdate(id, newEvento, {new:true})
     return res.status(200).json(eventoUpdated)
     
