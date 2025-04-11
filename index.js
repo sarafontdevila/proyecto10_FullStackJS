@@ -9,8 +9,8 @@ connectDB()
 
 app.use(express.json())
 
-app.use("/api/v1/users", eventosRouter)
-app.use("/api/v1/eventos", usersRouter)
+app.use("/api/v1/users", usersRouter)
+app.use("/api/v1/eventos", eventosRouter)
 
 app.use("*", (req, res, next) => {
   return res.status(404).json("Route Not Found");
