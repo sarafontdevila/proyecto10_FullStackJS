@@ -4,11 +4,18 @@ const { connectDB } = require("./src/config/db")
 const eventosRouter = require("./src/api/routes/evento")
 const usersRouter = require("./src/api/routes/user")
 const cors = require("cors")
+const cloudinary = require("cloudinary").v2
 
 const app = express()
 connectDB()
 
 app.use (cors())
+
+cloudinary.config({
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.API_KEY,
+  api_secret: process.env.API_SECRET
+})
 
 app.use(express.json())
 
