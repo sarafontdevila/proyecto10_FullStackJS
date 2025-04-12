@@ -5,6 +5,8 @@ const eventoSchema = new mongoose.Schema({
   precio: {type: Number, required: true},
   fecha: {type: Date, required: true},
   lugar: {type: String, required: true},
+  descripcion: {type: String, required: true},
+  asistentes: [{type: mongoose.Types.ObjectId, required:false, ref: "users"}],
   imagen: {type: String, required: true},
 
 },{

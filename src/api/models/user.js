@@ -6,6 +6,11 @@ const userSchema = new mongoose.Schema({
   password: {type: String, required: true},
   preferidos: [{type: mongoose.Types.ObjectId, required:false, ref: "eventos"}
   ],
+  rol:{ 
+    type: String, 
+    required:true, 
+    default: "user", 
+    enum: ["admin", "user"]},
 },
 {
   timestamps: true,

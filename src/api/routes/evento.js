@@ -1,10 +1,11 @@
+const { isAuth } = require("../../middlewares/auth")
 const { getEventos, getEventoById, postEvento, updateEvento, deleteEvento } = require("../controllers/evento")
 const eventosRouter = require("express").Router()
 
 eventosRouter.get("/", getEventos)
 eventosRouter.get("/:id", getEventoById)
-eventosRouter.post("/", postEvento)
-eventosRouter.put("/:id", updateEvento)
-eventosRouter.delete("/:id", deleteEvento)
+eventosRouter.post("/", isAuth,  postEvento)
+eventosRouter.put("/:id", isAuth, updateEvento)
+eventosRouter.delete("/:id", isAuth,  deleteEvento)
 
 module.exports = eventosRouter
