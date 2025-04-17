@@ -32,6 +32,8 @@ const postEvento = async (req, res) => {
 const updateEvento = async (req, res) => {
   try {
     const {id} = req.params
+    req.body.imagen = req.file?.path || "imagen rota";
+    
     const newEvento = new Evento(req.body)
     newEvento._id = id
     const eventoUpdated = await Evento.findByIdAndUpdate(id, newEvento, {new:true})
