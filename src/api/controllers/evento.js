@@ -55,5 +55,22 @@ const deleteEvento = async (req, res) => {
     
   }
 }
+const quitarAsistente =async (req, res) => {
+  const { id } = req.params
+  const { userId } = req.body
 
-module.exports = { getEventos, getEventoById, postEvento, updateEvento, deleteEvento }
+  try {
+    const eventoActualizado = await Evento.findByIdAndUpdate(
+      id,
+      { $pull: { asistentes: userId } },
+      { new: true }
+    )
+    res.status(200).json(eventoActualizado)
+  } catch (err) {
+    res.status(500).json({ message: "Error al quitar asistente", error: err })
+  }
+}
+
+
+
+module.exports = { getEventos, getEventoById, postEvento, updateEvento, deleteEvento, quitarAsistente }

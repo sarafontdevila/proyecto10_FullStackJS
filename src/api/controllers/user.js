@@ -21,11 +21,12 @@ const getUserById = async (req, res, next) => {
 }
 const register = async (req, res, next) => {
   try {
-    const userduplicated = await User.findOne({ email: req.body.email })
+    const userduplicated = await User.findOne({ nombre:req.body.nombre,email: req.body.email })
     if (userduplicated) {
       return res.status(400).json('Usuario ya existe')
     }
     const newUser = new User ({
+      nombre:req.body.nombre,
       email:req.body.email,
       password:req.body.password,
       rol:"user"
@@ -38,7 +39,7 @@ const register = async (req, res, next) => {
 }
 const login = async (req, res, next) => {
   try {
-    const { email, password } = req.body
+    const { nombre,email, password } = req.body
     const user = await User.findOne({ email })
     if (!user) {
       return res.status(400).json('Usuario o contraseña no encontrado')
