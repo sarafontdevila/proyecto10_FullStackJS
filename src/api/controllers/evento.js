@@ -55,22 +55,49 @@ const deleteEvento = async (req, res) => {
     
   }
 }
-const quitarAsistente =async (req, res) => {
-  const { id } = req.params
-  const { userId } = req.body
-
+const addAsistente = async (req, res) => {
   try {
-    const eventoActualizado = await Evento.findByIdAndUpdate(
-      id,
-      { $pull: { asistentes: userId } },
-      { new: true }
-    )
-    res.status(200).json(eventoActualizado)
-  } catch (err) {
-    res.status(500).json({ message: "Error al quitar asistente", error: err })
+    const { id } = req.params;
+    const { asistente } = req.body;
+    
+    const evento = await Evento.findById(id);
+    
+    if (!evento) {
+      return res.status(404).json({ message: "Evento no encontrado" });
+    }
+    
+    if (!evento.asistentes.includes(asistente)) {
+      evento.asistentes.push(asistente);
+      await evento.save();
+    }
+    
+    res.status(200).json({ message: "Asistente añadido correctamente" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+}
+const quitarAsistente =async (req, res) => {
+  try {
+    const { id, userId } = req.params;
+    
+    const evento = await Evento.findById(id);
+    
+    if (!evento) {
+      return res.status(404).json({ message: "Evento no encontrado" });
+    }
+    
+    evento.asistentes = evento.asistentes.filter(
+      asistente => asistente.toString() !== userId
+    );
+    
+    await evento.save();
+    
+    res.status(200).json({ message: "Asistente eliminado correctamente" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 }
 
 
 
-module.exports = { getEventos, getEventoById, postEvento, updateEvento, deleteEvento, quitarAsistente }
+module.exports = { getEventos, getEventoById, postEvento, updateEvento, deleteEvento, addAsistente,quitarAsistente }
