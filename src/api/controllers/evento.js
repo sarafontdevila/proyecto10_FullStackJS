@@ -1,4 +1,5 @@
 const Evento = require("../models/evento")
+const User = require("../models/user")
 
 const getEventos = async (req, res, next) => {
   try {
@@ -20,6 +21,8 @@ const getEventoById = async (req, res, next) => {
 }
 const postEvento = async (req, res) => {
   try {
+    console.log("🧾 req.body:", req.body);
+    console.log("🖼️ req.file:", req.file);
     const newEvento = new Evento(req.body)
     const evento = await newEvento.save()
     return res.status(200).json(evento)
@@ -29,6 +32,7 @@ const postEvento = async (req, res) => {
     
   }
 }
+
 const updateEvento = async (req, res) => {
   try {
     const {id} = req.params
@@ -97,7 +101,29 @@ const quitarAsistente =async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 }
+const getAsistentesEvento = async (req, res) => {
+  try {
+    const idEvento = req.params.id;
+    
+    const evento = await Evento.findById(idEvento);
+    
+    if (!evento) {
+      return res.status(404).json({ mensaje: "Evento no encontrado" });
+    }
+    
+    const asistentes = await User.find(
+      { _id: { $in: evento.asistentes } },
+      { nombre: 1} 
+    );
+    
+    res.status(200).json(asistentes);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ mensaje: "Error al obtener asistentes del evento" });
+  }
+};
 
 
 
-module.exports = { getEventos, getEventoById, postEvento, updateEvento, deleteEvento, addAsistente,quitarAsistente }
+
+module.exports = { getEventos, getEventoById, postEvento, updateEvento, deleteEvento, addAsistente,quitarAsistente, getAsistentesEvento }
