@@ -1,6 +1,6 @@
 const { isAuth } = require("../../middlewares/auth")
 const upload = require("../../middlewares/file")
-/*const multer = require("multer")*/
+
 const { getEventos, getEventoById, postEvento, updateEvento, deleteEvento, quitarAsistente, addAsistente,getAsistentesEvento } = require("../controllers/evento")
 const eventosRouter = require("express").Router()
 
