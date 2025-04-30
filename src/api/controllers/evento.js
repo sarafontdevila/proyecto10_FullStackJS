@@ -33,6 +33,7 @@ const postEvento = async (req, res) => {
   }
 }
 
+
 const updateEvento = async (req, res) => {
   try {
     const {id} = req.params
