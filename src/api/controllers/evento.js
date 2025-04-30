@@ -24,10 +24,14 @@ const postEvento = async (req, res) => {
     console.log("🧾 req.body:", req.body);
     console.log("🖼️ req.file:", req.file);
     const newEvento = new Evento(req.body)
+    if (req.file){
+      newEvento.imagen = req.file.path
+    }
     const evento = await newEvento.save()
     return res.status(200).json(evento)
     
   } catch (error) {
+    console.log("error", error)
     return res.status(400).json("error", error)
     
   }
