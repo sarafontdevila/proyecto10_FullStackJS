@@ -44,7 +44,7 @@ const register = async (req, res, next) => {
 }
 const login = async (req, res, next) => {
   try {
-    const { nombre,email, password } = req.body
+    const {email, password } = req.body
     const user = await User.findOne({ email })
     if (!user) {
       return res.status(400).json('Usuario o contraseña no encontrado')

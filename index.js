@@ -22,9 +22,6 @@ app.use(express.json())
 app.use("/api/v1/users", usersRouter)
 app.use("/api/v1/eventos", eventosRouter)
 
-/*app.use("/*",(req, res, next) => {
-  return res.status(404).json("Route Not Found");
-})*/
 app.use((req, res) => {
   return res.status(404).json({ error: "Route Not Found" });
 });
