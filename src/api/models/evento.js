@@ -7,8 +7,8 @@ const eventoSchema = new mongoose.Schema({
   fecha: {type: Date, required: true},
   lugar: {type: String, required: true},
   descripcion: {type: String, required: true},
-  asistentes: [{type: mongoose.Types.ObjectId, required:false, ref: "users"}],
-
+  asistentes: [{type: mongoose.Types.ObjectId, required:false, ref: "users"},],
+  creadorId: { type: mongoose.Types.ObjectId, ref: "users", required: false }
 },{
   timestamps: true,
   collection: "eventos"

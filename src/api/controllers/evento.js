@@ -19,7 +19,7 @@ const getEventoById = async (req, res, next) => {
     return res.status(400).json("error")
   }
 }
-const postEvento = async (req, res) => {
+/*const postEvento = async (req, res) => {
   try {
     console.log("🧾 req.body:", req.body);
     console.log("🖼️ req.file:", req.file);
@@ -35,8 +35,25 @@ const postEvento = async (req, res) => {
     return res.status(400).json("error", error)
     
   }
-}
+}*/
 
+const crearEvento = async (req, res) => {
+  try {
+    const userId = req.user.id
+
+    const nuevoEvento = new Evento({
+      ...req.body,
+      creadorId: userId,
+      imagen: req.file ? req.file.path : undefined
+    })
+
+    const eventoGuardado = await nuevoEvento.save()
+    return res.status(201).json(eventoGuardado)
+  } catch (error) {
+    console.log("Error al crear evento:", error)
+    return res.status(500).json({ error: "Error al crear evento" })
+  }
+}
 
 const updateEvento = async (req, res) => {
   try {
@@ -49,19 +66,30 @@ const updateEvento = async (req, res) => {
     return res.status(200).json(eventoUpdated)
     
   } catch (error) {
-    return res.status(400).json("error")
+    return res.status(400).json("error al actualizar evento")
     
   }
 }
+
 const deleteEvento = async (req, res) => {
   try {
     const { id } = req.params
-    const evento = await Evento.findByIdAndDelete(id)
-    return res.status(200).json(evento)
-    
+    const userId = req.user.id
+
+    const evento = await Evento.findById(id)
+
+    if (!evento) {
+      return res.status(404).json({ error: "Evento no encontrado" })
+    }
+
+    if (evento.creadorId.toString() !== userId) {
+      return res.status(403).json({ error: "No autorizado para eliminar este evento" })
+    }
+
+    await Evento.findByIdAndDelete(id)
+    return res.status(200).json({ mensaje: "Evento eliminado correctamente" })
   } catch (error) {
-    return res.status(400).json("error")
-    
+    return res.status(400).json("Error al eliminar evento")
   }
 }
 const addAsistente = async (req, res) => {
@@ -131,4 +159,4 @@ const getAsistentesEvento = async (req, res) => {
 
 
 
-module.exports = { getEventos, getEventoById, postEvento, updateEvento, deleteEvento, addAsistente,quitarAsistente, getAsistentesEvento }
+module.exports = { getEventos, getEventoById, crearEvento, updateEvento, deleteEvento, crearEvento, addAsistente,quitarAsistente, getAsistentesEvento }
