@@ -155,8 +155,20 @@ const getAsistentesEvento = async (req, res) => {
     res.status(500).json({ mensaje: "Error al obtener asistentes del evento" });
   }
 };
+const getMisEventos = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const eventos = await Evento.find({
+      asistentes: { $in: [userId] }
+    });
+    return res.status(200).json(eventos);
+  } catch (error) {
+    console.error("Error al obtener mis eventos:", error);
+    return res.status(500).json({ error: "Error al obtener mis eventos" });
+  }
+};
 
 
 
 
-module.exports = { getEventos, getEventoById, crearEvento, updateEvento, deleteEvento, crearEvento, addAsistente,quitarAsistente, getAsistentesEvento }
+module.exports = { getEventos, getEventoById, crearEvento, updateEvento, deleteEvento, crearEvento, addAsistente,quitarAsistente, getAsistentesEvento, getMisEventos }
