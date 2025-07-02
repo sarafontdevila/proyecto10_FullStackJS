@@ -160,14 +160,7 @@ const getMisEventos = async (req, res) => {
     const userId = req.user.id;
     const eventos = await Evento.find({
       asistentes: { $in: [userId] }
-    }).populate({
-      path: 'asistentes', 
-      select: 'nombre' 
-    }).populate({
-      path: 'creadorId',
-      select: 'nombre'
     });
-    
     return res.status(200).json(eventos);
   } catch (error) {
     console.error("Error al obtener mis eventos:", error);

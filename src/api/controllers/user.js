@@ -59,7 +59,7 @@ const login = async (req, res, next) => {
     return res.status(400).json('error')
   }
 }
-const updateUser = async (req, res, next) => {
+/*const updateUser = async (req, res, next) => {
   try {
     const { id } = req.params  
 
@@ -76,6 +76,37 @@ const updateUser = async (req, res, next) => {
   } catch (error) {
     return res.status(400).json('error')
   }
+}*/
+const updateUser = async (req, res) => {
+  try {
+    const { id } = req.params
+    const { preferidoId } = req.body 
+
+    if (req.user._id.toString() !== id) {
+      return res.status(403).json('No puedes actualizar otro usuario')
+    }
+
+    const evento = await Evento.findById(preferidoId)
+    if (!evento) {
+      return res.status(404).json('Evento no encontrado')
+    }
+
+    const user = await User.findById(id)
+
+    if (!user.preferidos.includes(preferidoId)) {
+      user.preferidos.push(preferidoId)
+      await user.save()
+    }
+
+    const updatedUser = await User.findById(id).populate('preferidos')
+    return res.status(200).json(updatedUser)
+
+  } catch (error) {
+    console.error(error)
+    return res.status(400).json('Error al actualizar usuario')
+  }
 }
+
+
 
 module.exports = { getUsers, getUserById, register, updateUser, login }
