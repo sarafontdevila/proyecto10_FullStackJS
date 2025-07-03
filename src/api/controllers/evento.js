@@ -44,6 +44,7 @@ const crearEvento = async (req, res) => {
     const nuevoEvento = new Evento({
       ...req.body,
       creadorId: userId,
+      asistentes: [userId],
       imagen: req.file ? req.file.path : undefined
     })
 
@@ -158,8 +159,9 @@ const getAsistentesEvento = async (req, res) => {
 const getMisEventos = async (req, res) => {
   try {
     const userId = req.user.id;
+    console.log("🔍 Buscando eventos para userId:", userId)
     const eventos = await Evento.find({
-      asistentes: { $in: [userId] }
+      asistentes: userId 
     }).populate({
       path: 'asistentes', 
       select: 'nombre' 
