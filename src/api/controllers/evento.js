@@ -3,7 +3,10 @@ const User = require("../models/user")
 
 const getEventos = async (req, res, next) => {
   try {
+    /*const eventos = await Evento.find()*/
     const eventos = await Evento.find()
+  .populate({ path: 'asistentes', select: 'nombre' }) 
+  .populate({ path: 'creadorId', select: 'nombre' });
     return res.status(200).json(eventos)
   } catch (error) {
     return res.status(400).json("error")
@@ -13,7 +16,9 @@ const getEventos = async (req, res, next) => {
 const getEventoById = async (req, res, next) => {
   try {
     const {id} = req.params
-    const evento = await Evento.findById(id)
+    /*const evento = await Evento.findById(id)*/const evento = await Evento.findById(id)
+  .populate({ path: 'asistentes', select: 'nombre' })
+  .populate({ path: 'creadorId', select: 'nombre' });
     return res.status(200).json(evento)
   } catch (error) {
     return res.status(400).json("error")
