@@ -185,4 +185,4 @@ const getMisEventos = async (req, res) => {
 
 
 
-module.exports = { getEventos, getEventoById, crearEvento, updateEvento, deleteEvento, crearEvento, addAsistente,quitarAsistente, getAsistentesEvento, getMisEventos }
+module.exports = { getEventos, getEventoById, crearEvento, updateEvento, deleteEvento, addAsistente,quitarAsistente, getAsistentesEvento, getMisEventos }
