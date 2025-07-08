@@ -1,9 +1,9 @@
 const Evento = require("../models/evento")
 const User = require("../models/user")
+const deleteFile = require("../../utils/deleteFile")
 
 const getEventos = async (req, res, next) => {
   try {
-    /*const eventos = await Evento.find()*/
     const eventos = await Evento.find()
   .populate({ path: 'asistentes', select: 'nombre' }) 
   .populate({ path: 'creadorId', select: 'nombre' });
@@ -16,7 +16,7 @@ const getEventos = async (req, res, next) => {
 const getEventoById = async (req, res, next) => {
   try {
     const {id} = req.params
-    /*const evento = await Evento.findById(id)*/const evento = await Evento.findById(id)
+    const evento = await Evento.findById(id)
   .populate({ path: 'asistentes', select: 'nombre' })
   .populate({ path: 'creadorId', select: 'nombre' });
     return res.status(200).json(evento)
@@ -61,7 +61,7 @@ const crearEvento = async (req, res) => {
   }
 }
 
-const updateEvento = async (req, res) => {
+/*const updateEvento = async (req, res) => {
   try {
     const {id} = req.params
     req.body.imagen = req.file?.path || "imagen rota";
@@ -75,7 +75,32 @@ const updateEvento = async (req, res) => {
     return res.status(400).json("error al actualizar evento")
     
   }
-}
+}*/
+const updateEvento = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const updateFields = {
+      ...req.body,
+    };
+
+    if (req.file) {
+      updateFields.imagen = req.file.path;
+    }
+
+    const eventoUpdated = await Evento.findByIdAndUpdate(id, updateFields, { new: true });
+
+    if (!eventoUpdated) {
+      return res.status(404).json({ error: "Evento no encontrado" });
+    }
+
+    return res.status(200).json(eventoUpdated);
+  } catch (error) {
+    console.error("Error al actualizar evento:", error);
+    return res.status(400).json({ error: "Error al actualizar evento" });
+  }
+};
+
 
 const deleteEvento = async (req, res) => {
   try {
@@ -90,6 +115,9 @@ const deleteEvento = async (req, res) => {
 
     if (evento.creadorId.toString() !== userId) {
       return res.status(403).json({ error: "No autorizado para eliminar este evento" })
+    }
+    if (evento.imagen) {
+      await deleteFile(evento.imagen);
     }
 
     await Evento.findByIdAndDelete(id)
