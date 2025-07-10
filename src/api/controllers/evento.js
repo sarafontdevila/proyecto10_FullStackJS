@@ -24,23 +24,6 @@ const getEventoById = async (req, res, next) => {
     return res.status(400).json("error")
   }
 }
-/*const postEvento = async (req, res) => {
-  try {
-    console.log("🧾 req.body:", req.body);
-    console.log("🖼️ req.file:", req.file);
-    const newEvento = new Evento(req.body)
-    if (req.file){
-      newEvento.imagen = req.file.path
-    }
-    const evento = await newEvento.save()
-    return res.status(200).json(evento)
-    
-  } catch (error) {
-    console.log("error", error)
-    return res.status(400).json("error", error)
-    
-  }
-}*/
 
 const crearEvento = async (req, res) => {
   try {
@@ -61,21 +44,6 @@ const crearEvento = async (req, res) => {
   }
 }
 
-/*const updateEvento = async (req, res) => {
-  try {
-    const {id} = req.params
-    req.body.imagen = req.file?.path || "imagen rota";
-    
-    const newEvento = new Evento(req.body)
-    newEvento._id = id
-    const eventoUpdated = await Evento.findByIdAndUpdate(id, newEvento, {new:true})
-    return res.status(200).json(eventoUpdated)
-    
-  } catch (error) {
-    return res.status(400).json("error al actualizar evento")
-    
-  }
-}*/
 const updateEvento = async (req, res) => {
   try {
     const { id } = req.params;
@@ -209,8 +177,6 @@ const getMisEventos = async (req, res) => {
     return res.status(500).json({ error: "Error al obtener mis eventos" });
   }
 };
-
-
 
 
 module.exports = { getEventos, getEventoById, crearEvento, updateEvento, deleteEvento, addAsistente,quitarAsistente, getAsistentesEvento, getMisEventos }

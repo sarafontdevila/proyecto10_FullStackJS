@@ -59,55 +59,35 @@ const login = async (req, res, next) => {
     return res.status(400).json('error')
   }
 }
-/*const updateUser = async (req, res, next) => {
-  try {
-    const { id } = req.params  
 
-    if (req.user._id.toString() !== req.params.id){
-      return res.status(400).json('No puedes actualizar otro usuario')
-    }
-    const oldUser = await User.findById(id)
-    const newUser = new User(req.body)
-    newUser._id = id
-    newUser.preferidos = [...oldUser.preferidos, ...newUser.preferidos]
-    const userUpdated = await User.findByIdAndUpdate(id, newUser, { new: true })
-    return res.status(200).json(userUpdated)
-
-  } catch (error) {
-    return res.status(400).json('error')
-  }
-}*/
 const updateUser = async (req, res) => {
   try {
     const { id } = req.params
-    const { preferidoId } = req.body 
+    const { preferidos } = req.body 
 
     if (req.user._id.toString() !== id) {
-      return res.status(403).json('No puedes actualizar otro usuario')
+      return res.status(403).json('Acceso denegado. No tienes permiso para realizar esta acción.')
     }
+    
+    const updatedUser = await User.findByIdAndUpdate(
+      id,
+      { preferidos: preferidos }, 
+      { new: true, runValidators: true } 
+    ).populate('preferidos'); 
 
-    const evento = await Evento.findById(preferidoId)
-    if (!evento) {
-      return res.status(404).json('Evento no encontrado')
+    if (!updatedUser) {
+      return res.status(404).json('Usuario no encontrado.');
     }
+    updatedUser.password = undefined; 
 
-    const user = await User.findById(id)
+    return res.status(200).json(updatedUser);
 
-    if (!user.preferidos.includes(preferidoId)) {
-      user.preferidos.push(preferidoId)
-      await user.save()
-    }
+  }
 
-    const updatedUser = await User.findById(id).populate('preferidos')
-    return res.status(200).json(updatedUser)
-
-  } catch (error) {
+    catch (error) {
     console.error(error)
     return res.status(400).json('Error al actualizar usuario')
   }
 }
-
-
-
 
 module.exports = { getUsers, getUserById, register, updateUser, login }
