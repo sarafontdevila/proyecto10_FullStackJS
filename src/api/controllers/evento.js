@@ -27,7 +27,7 @@ const getEventoById = async (req, res, next) => {
 
 const crearEvento = async (req, res) => {
   try {
-    const userId = req.user.id
+    const userId = req.user._id
 
     const nuevoEvento = new Evento({
       ...req.body,
@@ -159,10 +159,10 @@ const getAsistentesEvento = async (req, res) => {
 };
 const getMisEventos = async (req, res) => {
   try {
-    const userId = req.user.id;
-    console.log("🔍 Buscando eventos para userId:", userId)
+    const userId = req.user._id;
+    console.log("🔍 Buscando eventos para userId (creador):", userId)
     const eventos = await Evento.find({
-      asistentes: userId 
+      creadorId: userId 
     }).populate({
       path: 'asistentes', 
       select: 'nombre' 
