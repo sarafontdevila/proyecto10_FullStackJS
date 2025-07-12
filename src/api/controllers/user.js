@@ -23,7 +23,7 @@ const register = async (req, res, next) => {
   try {
     const userduplicated = await User.findOne({ nombre:req.body.nombre,email: req.body.email })
     if (userduplicated) {
-      return res.status(400).json('Usuario ya existe')
+      return res.status(400).json({message:'Usuario ya existe'})
     }
     const newUser = new User ({
       nombre:req.body.nombre,
@@ -39,7 +39,7 @@ const register = async (req, res, next) => {
       token
     })
   } catch (error) {
-    return res.status(400).json('error')
+    return res.status(400).json({message:'error en registro'})
   }
 }
 const login = async (req, res, next) => {
@@ -47,16 +47,16 @@ const login = async (req, res, next) => {
     const {email, password } = req.body
     const user = await User.findOne({ email })
     if (!user) {
-      return res.status(400).json('Usuario o contraseña no encontrado')
+      return res.status(400).json({messag:'Usuario o contraseña no encontrado'})
     }
     if (bcrypt.compareSync(password, user.password)){
       const token = generateToken(user._id)
       return res.status(200).json({ token, user })
     }
-      return res.status(400).json('Contraseña o usuario incorrecta')
+      return res.status(400).json({message:'Contraseña o usuario incorrecta'})
 
   } catch (error) {
-    return res.status(400).json('error')
+    return res.status(400).json({message:'error en login'})
   }
 }
 
