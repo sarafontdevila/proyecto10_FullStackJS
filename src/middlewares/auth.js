@@ -9,6 +9,7 @@ const isAuth = async (req, res, next) => {
     const { id } = verifyToken(parsedToken)
     const user = await User.findById(id)
 
+
     user.password = null
     req.user = user
     next()
@@ -18,5 +19,11 @@ const isAuth = async (req, res, next) => {
     
   }
 }
+const isAdmin = (req, res, next) => {
+  if (req.user?.rol !== "admin") {
+    return res.status(403).json({ message: "Acceso denegado: solo administradores" })
+  }
+  next()
+}
 
-module.exports = { isAuth }
+module.exports = { isAuth, isAdmin }

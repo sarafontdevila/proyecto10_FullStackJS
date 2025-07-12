@@ -86,7 +86,7 @@ const updateUser = async (req, res) => {
 
     catch (error) {
     console.error(error)
-    return res.status(400).json('Error al actualizar usuario')
+    return res.status(400).json('Error al actualizar')
   }
 }
 

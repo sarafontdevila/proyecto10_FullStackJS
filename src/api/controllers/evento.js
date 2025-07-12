@@ -13,6 +13,8 @@ const getEventos = async (req, res, next) => {
     
   }
 }
+
+
 const getEventoById = async (req, res, next) => {
   try {
     const {id} = req.params
@@ -47,53 +49,63 @@ const crearEvento = async (req, res) => {
 const updateEvento = async (req, res) => {
   try {
     const { id } = req.params;
+    const userId = req.user._id;
 
-    const updateFields = {
-      ...req.body,
-    };
+    const evento = await Evento.findById(id);
+    if (!evento) {
+      return res.status(404).json({ error: "Evento no encontrado" });
+    }
 
+    const isAdmin = req.user.rol === "admin";
+    const isCreador = evento.creadorId.toString() === userId.toString();
+
+    if (!isAdmin && !isCreador) {
+      return res.status(403).json({ error: "No autorizado para editar este evento" });
+    }
+
+    const updateFields = { ...req.body };
     if (req.file) {
       updateFields.imagen = req.file.path;
     }
 
     const eventoUpdated = await Evento.findByIdAndUpdate(id, updateFields, { new: true });
-
-    if (!eventoUpdated) {
-      return res.status(404).json({ error: "Evento no encontrado" });
-    }
-
     return res.status(200).json(eventoUpdated);
+
   } catch (error) {
     console.error("Error al actualizar evento:", error);
     return res.status(400).json({ error: "Error al actualizar evento" });
   }
 };
 
-
 const deleteEvento = async (req, res) => {
   try {
-    const { id } = req.params
-    const userId = req.user.id
+    const { id } = req.params;
+    const userId = req.user._id;
 
-    const evento = await Evento.findById(id)
-
+    const evento = await Evento.findById(id);
     if (!evento) {
-      return res.status(404).json({ error: "Evento no encontrado" })
+      return res.status(404).json({ error: "Evento no encontrado" });
     }
 
-    if (evento.creadorId.toString() !== userId) {
-      return res.status(403).json({ error: "No autorizado para eliminar este evento" })
+    const isAdmin = req.user.rol === "admin";
+    const isCreador = evento.creadorId.toString() === userId.toString();
+
+    if (!isAdmin && !isCreador) {
+      return res.status(403).json({ error: "No autorizado para eliminar este evento" });
     }
+
     if (evento.imagen) {
       await deleteFile(evento.imagen);
     }
 
-    await Evento.findByIdAndDelete(id)
-    return res.status(200).json({ mensaje: "Evento eliminado correctamente" })
+    await Evento.findByIdAndDelete(id);
+    return res.status(200).json({ mensaje: "Evento eliminado correctamente" });
+
   } catch (error) {
-    return res.status(400).json("Error al eliminar evento")
+    return res.status(400).json({ error: "Error al eliminar evento" });
   }
-}
+};
+
 const addAsistente = async (req, res) => {
   try {
     const { id } = req.params;
@@ -115,6 +127,9 @@ const addAsistente = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 }
+
+
+
 const quitarAsistente =async (req, res) => {
   try {
     const { id, userId } = req.params;
@@ -157,13 +172,20 @@ const getAsistentesEvento = async (req, res) => {
     res.status(500).json({ mensaje: "Error al obtener asistentes del evento" });
   }
 };
-const getMisEventos = async (req, res) => {
+const getEventosCreados = async (req, res) => {
   try {
     const userId = req.user._id;
-    console.log("🔍 Buscando eventos para userId (creador):", userId)
-    const eventos = await Evento.find({
-      creadorId: userId 
-    }).populate({
+    const isAdmin = req.user.rol === "admin";
+
+    const query = isAdmin ?{} : { creadorId: userId };
+    if (isAdmin) {
+      console.log("🔍 Buscando eventos para admin");
+    } else {
+      console.log("🔍 Buscando eventos para userId:", userId);
+    }
+    
+    const eventos = await Evento.find(query)
+    .populate({
       path: 'asistentes', 
       select: 'nombre' 
     }).populate({
@@ -173,10 +195,11 @@ const getMisEventos = async (req, res) => {
     
     return res.status(200).json(eventos);
   } catch (error) {
-    console.error("Error al obtener mis eventos:", error);
-    return res.status(500).json({ error: "Error al obtener mis eventos" });
+    console.error("Error al obtener eventos:", error);
+    return res.status(500).json({ error: "Error al obtener eventos" });
   }
 };
 
 
-module.exports = { getEventos, getEventoById, crearEvento, updateEvento, deleteEvento, addAsistente,quitarAsistente, getAsistentesEvento, getMisEventos }
+
+module.exports = { getEventos, getEventoById, crearEvento, updateEvento, deleteEvento, addAsistente,quitarAsistente, getAsistentesEvento, getEventosCreados }
