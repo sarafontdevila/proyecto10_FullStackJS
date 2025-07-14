@@ -1,17 +1,19 @@
-# proyecto10_FullStackJS
+
+# proyecto10_backend
 
 # 🎉 Plataforma de Eventos
 
 Es una plataforma web donde los usuarios pueden iniciar sesión, explorar eventos disponibles, escoger asistir, tener su propia sección de eventos escogidos, crear eventos y poder ver una lista con los usuarios que van a asistir.
-El usuario que es nuevo puede registrarse a la vez que automáticamente ya entra en la plataforma evitando así un paso de registro a login.
+Hay dos roles el usuario y administrador. El administrador puede ver la lista completa de los asistentes y todos los eventos creados, tambien puede editarlos y borrarlos.
+
 
 ## 🚀 Características
 
-- Autenticación de usuarios (registro / login) en un solo paso
-- Explorar eventos
-- Poder seleccionar eventos si es usuario autentificado
-- Crear eventos si es usuario autentificado
-- Acceso a una lista de eventos con los nombres de asistentes
+- Autenticación de usuarios
+- Home: se ven todos los eventos y se invita al usuario a registrarse si no está logueado
+- Usuario: 1) crear, actualizar y borrar sus eventos si es usuario autentificado. 2) acceso a lista asistentes de sus eventos
+- Administrador: 1)crear, actualizar y borrar todos eventos si es usuario autentificado. Acceso a la lista de asistentes de todos los eventos.2) acceso a la lista asistente de todos los eventos
+
 
 ## 🛠️ Tecnologías
 
@@ -37,7 +39,7 @@ npm run dev
 🔐 Autenticación
 Método	Endpoint	Descripción	Body (JSON)
 POST	/auth/register	Registrar un nuevo usuario	{ "nombre": "", "email": "", "password": "" }
-POST	/auth/login	Iniciar sesión	{ "nombre": "", "email": "", "password": "" }
+POST	/auth/login	Iniciar sesión	{ "email": "", "password": "" }
 
 👤 Endpoints de Usuario
 Método	Endpoint	Descripción	Body requerido	Autenticación
@@ -45,18 +47,23 @@ Método	Endpoint	Descripción	Body requerido	Autenticación
 POST	/users/register	Registrar un nuevo usuario	{ "nombre": "", "email": "", "password": "", ... }	No
 POST	/users/login	Iniciar sesión del usuario	{ "nombre": "","password": "" }	No
 
-📅 Endpoints de Eventos
-General
+📁 Endpoints de Eventos
+
+🔸 Eventos
 Método	Endpoint	Descripción	Autenticación	Body / Detalles
 
-POST	/eventos/	Crear un nuevo evento	✅ Sí	multipart/form-data con imagen
-DELETE	/eventos/:id	Eliminar un evento	✅ Sí	—
+GET	/eventos/	Obtener todos los eventos	
+GET	/eventos/:id	Obtener un evento por ID	
+POST	/eventos/	Crear un nuevo evento; multipart/form-data con campo imagen
+PUT	/eventos/:id	Actualizar un evento; multipart/form-data con campo imagen
+DELETE	/eventos/:id	Eliminar un evento	
+GET	/eventos-creados	Obtener eventos creados por el usuario	
 
-Asistentes
+👥 Asistentes
 Método	Endpoint	Descripción	Autenticación	Body / Detalles
 
-PUT	/eventos/:id/asistentes	Añadir usuario autenticado como asistente	✅ Sí	—
-DELETE	/eventos/:id/asistentes/:userId	Quitar asistente por ID	✅ Sí	—
+PUT	/eventos/:id/asistentes	Añadir usuario autenticado como asistente	
+DELETE	/eventos/:id/asistentes/:userId	Quitar asistente por ID	
 GET	/eventos/:id/asistentes	Obtener lista de asistentes del evento
 
 ## 📄 Licencia
