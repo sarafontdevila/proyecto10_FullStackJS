@@ -67,4 +67,4 @@ GET	/eventos/:id/asistentes	Obtener lista de asistentes del evento
 
 ## 📄 Licencia
 ---
-Copyright © 2025 Sara Fontdevila
+Copyright © 2025 Sara Fontdevila!
