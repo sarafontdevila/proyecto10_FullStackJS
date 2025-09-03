@@ -47,11 +47,7 @@ const app = express()
 connectDB()
 
 
-app.use(cors({
-  origin: ["*"
-
-  ]
-}))
+app.use(cors())
 
 
 cloudinary.config({
