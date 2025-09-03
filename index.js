@@ -48,10 +48,8 @@ connectDB()
 
 
 app.use(cors({
-  origin: [
-    'https://miseventosproyecto10.vercel.app', 
-    'http://localhost:3000',
-    'http://localhost:5173' 
+  origin: ["*"
+
   ]
 }))
 
