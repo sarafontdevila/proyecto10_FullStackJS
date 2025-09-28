@@ -119,9 +119,8 @@ const addAsistente = async (req, res) => {
     
     if (!evento.asistentes.includes(asistente)) {
       evento.asistentes.push(asistente);
-      /*await evento.save();*/
+      await evento.save();
     }
-    await evento.save();
 
     const eventoActualizado = await Evento.findById(id)
       .populate("asistentes", "nombre")
