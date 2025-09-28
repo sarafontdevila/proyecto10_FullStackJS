@@ -106,7 +106,7 @@ const deleteEvento = async (req, res) => {
   }
 };
 
-const addAsistente = async (req, res) => {
+/*const addAsistente = async (req, res) => {
   try {
     const { id } = req.params;
     const { asistente } = req.body;
@@ -130,11 +130,30 @@ const addAsistente = async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
-}
+}*/
+const addAsistente = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { asistente } = req.body;
+
+    const eventoActualizado = await Evento.findByIdAndUpdate(
+      id,
+      { $addToSet: { asistentes: asistente } }, 
+      { new: true }
+    )
+    .populate("asistentes", "nombre")
+    .populate("creadorId", "nombre");
+
+    if (!eventoActualizado) return res.status(404).json({ message: "Evento no encontrado" });
+    res.status(200).json(eventoActualizado);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
 
 
 
-const quitarAsistente =async (req, res) => {
+/*const quitarAsistente =async (req, res) => {
   try {
     const { id, userId } = req.params;
     
@@ -158,7 +177,26 @@ const quitarAsistente =async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
-}
+}*/
+const quitarAsistente = async (req, res) => {
+  try {
+    const { id, userId } = req.params;
+
+    const eventoActualizado = await Evento.findByIdAndUpdate(
+      id,
+      { $pull: { asistentes: userId } },
+      { new: true }
+    )
+    .populate("asistentes", "nombre")
+    .populate("creadorId", "nombre");
+
+    if (!eventoActualizado) return res.status(404).json({ message: "Evento no encontrado" });
+    res.status(200).json(eventoActualizado);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 const getAsistentesEvento = async (req, res) => {
   try {
     const idEvento = req.params.id;
