@@ -13,8 +13,6 @@ const getEventos = async (req, res, next) => {
     
   }
 }
-
-
 const getEventoById = async (req, res, next) => {
   try {
     const {id} = req.params
@@ -105,32 +103,6 @@ const deleteEvento = async (req, res) => {
     return res.status(400).json({ error: "Error al eliminar evento" });
   }
 };
-
-/*const addAsistente = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { asistente } = req.body;
-    
-    const evento = await Evento.findById(id);
-    
-    if (!evento) {
-      return res.status(404).json({ message: "Evento no encontrado" });
-    }
-    
-    if (!evento.asistentes.includes(asistente)) {
-      evento.asistentes.push(asistente);
-      await evento.save();
-    }
-
-    const eventoActualizado = await Evento.findById(id)
-      .populate("asistentes", "nombre")
-      .populate("creadorId", "nombre");
-    
-    res.status(200).json({ message: "Asistente añadido correctamente" });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-}*/
 const addAsistente = async (req, res) => {
   try {
     const { id } = req.params;
@@ -151,36 +123,13 @@ const addAsistente = async (req, res) => {
   }
 };
 
-
-
-/*const quitarAsistente =async (req, res) => {
-  try {
-    const { id, userId } = req.params;
-    
-    const evento = await Evento.findById(id);
-    
-    if (!evento) {
-      return res.status(404).json({ message: "Evento no encontrado" });
-    }
-    
-    evento.asistentes = evento.asistentes.filter(
-      asistente => asistente.toString() !== userId
-    );
-    
-    await evento.save();
-
-    const eventoActualizado = await Evento.findById(id)
-      .populate("asistentes", "nombre")
-      .populate("creadorId", "nombre");
-    
-    res.status(200).json({ message: "Asistente eliminado correctamente" });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-}*/
 const quitarAsistente = async (req, res) => {
   try {
     const { id, userId } = req.params;
+    console.log("🔍 Eliminando asistente:", userId, "del evento:", id);
+    
+    const eventoAntes = await Evento.findById(id);
+    console.log("👥 Asistentes antes:", eventoAntes?.asistentes)
 
     const eventoActualizado = await Evento.findByIdAndUpdate(
       id,
@@ -189,6 +138,8 @@ const quitarAsistente = async (req, res) => {
     )
     .populate("asistentes", "nombre")
     .populate("creadorId", "nombre");
+
+    console.log("👥 Asistentes después:", eventoActualizado?.asistentes);
 
     if (!eventoActualizado) return res.status(404).json({ message: "Evento no encontrado" });
     res.status(200).json(eventoActualizado);
